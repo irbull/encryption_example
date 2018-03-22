@@ -1,14 +1,24 @@
 let forge = require('node-forge');
 let fs = require('fs-extra');
-console.log("Starting encryption example");
 
 main().catch(console.error);
+
+function encrypt(publicKey, plainText) {
+  return { cipher: plainText };
+}
+
+function decrypt(privateKey, payload) {
+  return payload.cipher;
+}
 
 async function main() {
     let textFile = await fs.readFile("big.txt", "utf-8");
     let keypair = await generateKeyPair();
 
-    // Use a public private key to share textFile with a friend
+    let payload = encrypt(keypair.publicKey, textFile);
+    let result = decrypt(keypair.privateKey, payload);
+
+    console.log(textFile === result);
 }
 
 async function generateKeyPair() {
